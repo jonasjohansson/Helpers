@@ -1,0 +1,131 @@
+<html>
+<head>
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<style>
+    body {
+        background-color:linen;
+    }
+	input,
+	a { display:block; font-size:inherit; }
+	div,
+	input,
+	a { line-height:5rem; }
+
+	a,input {
+		width:100%;
+        padding-left:2rem;
+	}
+    form > *:nth-child(odd){
+        background-color:navajowhite;
+    }
+	input[type=submit] { 
+		text-transform:capitalize;
+		text-align:left;
+		cursor:pointer;
+        text-decoration:underline;
+	}
+	</style>
+	<form>
+		<input type="text" class="pre" placeholder="pre" value="http://ge.tt/">
+		<input type="text" class="string" placeholder="string" value="75K7dC82">
+		<input type="text" class="post" placeholder="post" value="/v/0?c">
+		<input type="submit" value="submit">
+	</form>
+	<div class="status"></div>
+	<script>
+	window.onload = init()
+	function uniq(a) {
+		var seen = {};
+		return a.filter(function(item) {
+			return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+		});
+	}
+	function init() {
+		var div = document.createElement("div");
+		var status = document.querySelector(".status");
+		if (readCookie("pre")) document.querySelector(".pre").value = readCookie("pre");
+		if (readCookie("s")) document.querySelector(".string").value = readCookie("s");
+		if (readCookie("post")) document.querySelector(".post").value = readCookie("post");
+		document.body.appendChild(div);
+		document.forms[0].addEventListener("submit",function(e){
+			e.preventDefault();
+			var pre = document.querySelector(".pre").value;
+			var s = document.querySelector(".string").value;
+			var post = document.querySelector(".post").value;
+			createCookie("pre",pre);
+			createCookie("s",s);
+			createCookie("post",post);
+			var sp = s.split("");
+			var urls = new Array();
+			for (var i = 0, l = 1 << s.length; i < l; i++) {
+				for (var j = i, k = 0; j; j >>= 1, k++) {
+					sp[k] = (j & 1) ? sp[k].toUpperCase() : sp[k].toLowerCase();
+				}
+				var st = sp.join("");
+				urls.push(pre+st+post);
+			}
+			urls = uniq(urls);
+			if (confirm(urls.length+" will be processed, proceed?")) {
+				for (var i = 0; i < urls.length; i++) {
+					var el = document.createElement("a");
+					el.setAttribute("href",urls[i]);
+					el.setAttribute("target","_blank");
+					el.innerHTML = urls[i];
+				}
+				check(urls);
+			} else {
+				return
+			}
+		},false);
+		function check(urls) {
+			status.innerText = 'Processing…';
+			var xmlhttp;
+			if (window.XMLHttpRequest) {
+				xmlhttp=new XMLHttpRequest();
+			}
+			xmlhttp.onreadystatechange=function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					var url = xmlhttp.responseText;
+					var a = document.createElement("a");
+					a.href = url;
+					a.appendChild(document.createTextNode(url));
+					document.body.appendChild(a);
+					if (url.length > 0) {
+						status.innerText = '';
+					} else {
+						status.innerText = 'Nothing found…';
+					}
+			    }
+			}
+			xmlhttp.open("POST","get.php",true);
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded")
+			xmlhttp.send("urls="+JSON.stringify(urls));
+		}
+		function createCookie(name,value,days) {
+			if (days) {
+				var date = new Date();
+				date.setTime(date.getTime()+(days*24*60*60*1000));
+				var expires = "; expires="+date.toGMTString();
+			}
+			else var expires = "";
+			document.cookie = name+"="+value+expires+"; path=/";
+		}
+		function readCookie(name) {
+			var nameEQ = name + "=";
+			var ca = document.cookie.split(';');
+			for(var i=0;i < ca.length;i++) {
+				var c = ca[i];
+				while (c.charAt(0)==' ') c = c.substring(1,c.length);
+				if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+			}
+			return null;
+		}
+		function eraseCookie(name) {
+			createCookie(name,"",-1);
+		}
+	}
+	</script>
+	</body>
+</html>

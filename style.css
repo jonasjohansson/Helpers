@@ -1,0 +1,16 @@
+* {
+    padding:0; 
+    margin:0; 
+    border:0; 
+    background:none;
+}
+*:focus {
+    outline:0;
+}
+html {
+    font-size:62.5%;
+    color:rgb(30,30,30);
+}
+body {
+    font:normal 1.8rem sans-serif; 
+}

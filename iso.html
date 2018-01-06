@@ -1,0 +1,66 @@
+<html>
+<head>
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r73/three.min.js"></script>
+	<script src="http://threejs.org/examples/js/loaders/collada/Animation.js"></script>
+	<script src="http://threejs.org/examples/js/loaders/collada/AnimationHandler.js"></script>
+	<script src="http://threejs.org/examples/js/loaders/collada/KeyFrameAnimation.js"></script>
+	<script src="http://threejs.org/examples/js/loaders/ColladaLoader.js"></script>
+	<script src="http://threejs.org/examples/js/controls/TrackballControls.js"></script>
+	<script>
+	/*
+	choose loader based on file dropped
+	isometric view mixed camera with perspective
+	choose background color
+	save as png
+	*/
+    window.onload = function(){
+		var d = 100;
+		var aspect = window.innerWidth/window.innerHeight;
+
+		camera = new THREE.OrthographicCamera(-d*aspect,d*aspect,d,-d,0,4000);
+		camera.position.x = 200;
+		camera.position.y = 100;
+		camera.position.z = 200;
+		scene = new THREE.Scene();
+
+		var loader = new THREE.ColladaLoader();
+		loader.options.convertUpAxis = true;
+		loader.load("http://threejs.org/examples/models/collada/monster/monster.dae",function(collada){
+			dae = collada.scene;
+			dae.traverse(function(child){
+				if (child instanceof THREE.Mesh){
+					child.material = new THREE.MeshBasicMaterial({color:0x000000,wireframe:true,wireframeLinewidth:0.1});
+				}
+			});
+			dae.scale.x = dae.scale.y = dae.scale.z = 0.05;
+			scene.add(dae);
+		});
+
+		renderer = new THREE.WebGLRenderer({antialias:true,alpha:true});
+		renderer.setSize(window.innerWidth,window.innerHeight);
+		renderer.sortObjects = false;
+		document.body.appendChild(renderer.domElement);
+
+		render();
+	}
+
+	function render() {
+		var timer = Date.now()*0.0001;
+		camera.position.x = Math.cos(timer)*100;
+		camera.position.z = Math.sin(timer)*100;
+		camera.lookAt(scene.position);
+		requestAnimationFrame(render,renderer.domElement);
+		renderer.render(scene,camera);
+	}
+
+	window.addEventListener("resize",function(e){
+		camera.aspect = window.innerWidth/window.innerHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize(window.innerWidth,window.innerHeight);
+	},false);
+	</script>
+</body>
+</html>

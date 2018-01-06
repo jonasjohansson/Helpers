@@ -1,0 +1,70 @@
+<html>
+<head>
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div>
+        <span>Width</span>
+        <input type="text" name="width" value="100">
+    </div>
+    <div>
+        <span>Height</span>
+        <input type="text" name="height" value="100">
+    </div>
+    <div>
+        <span>Color</span>
+        <input type="text" name="color" value="RoyalBlue">
+    </div>
+    <div>
+        <a class="generate">generate</a>
+    </div>
+    <canvas id="canvas" width="0" height="0"></canvas>
+    <style>
+    body {
+        background-color:linen;
+    }
+    canvas {  
+        display:none; 
+    }
+    body > div {
+        position:relative;
+        clear:both;
+        margin:0 auto;
+        padding-left:2rem;
+    }
+    body > div:nth-child(odd){
+        background-color:navajowhite;
+    }
+    a,input {
+        font-size:inherit;
+        line-height:5rem;
+        text-decoration:underline;
+        text-transform:capitalize;
+    }
+    a {
+        cursor:pointer;
+    }
+    </style>
+    <script>
+    window.onload = function(){
+        var link = document.getElementsByTagName("a")[0];
+        link.onclick = function(){
+            var width = document.querySelector("input[name=width]").value;
+            var height = document.querySelector("input[name=height]").value;
+            var color = document.querySelector("input[name=color]").value;
+            var name = width+"x"+height+"-"+color+".png";
+            var image = new Image();
+            var canvas = document.getElementById("canvas");
+            var context = canvas.getContext("2d");
+            canvas.width = width;
+            canvas.height = height;
+            context.fillStyle = color;
+            context.fillRect(0,0,width,height);
+            link.href = canvas.toDataURL("image/png");
+            link.setAttribute("download", name);
+        }
+    }
+    </script>
+</body>
+</html>
+    
