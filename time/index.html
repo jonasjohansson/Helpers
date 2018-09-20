@@ -1,0 +1,279 @@
+<html style="font-size:62.5%;">
+<head>
+    <title>Time</title>
+</head>
+<body style="margin:0;">
+    <div class="container">
+        <input id="toggle" type="checkbox">
+        <div class="time">
+            <div class="timer">
+                <div><span class="hour six"></span></div>
+                <div><span class="tenminute ten"></span></div>
+                <div class="divider"><span></span></div>
+                <div><span class="minute six"></span></div>
+                <div><span class="tensecond ten"></span></div>
+                <div class="divider"><span></span></div>
+                <div><span class="second ten"></span></div>
+                <div><span class="hundredmilisecond ten"></span></div>
+            </div>
+            <div class="clock">
+            </div>
+        </div>
+        <div id="svg" class="svg">
+            <svg x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100">
+                <g class="clock">
+                    <circle class="path minute r15" fill="none" cx="50" cy="50" r="15"/>
+                    <circle class="path hour r10" fill="none" cx="50" cy="50" r="10"/>
+                    <circle class="path day r5" fill="none" cx="50" cy="50" r="5"/>
+                </g>
+                <g class="timer">
+                    <circle class="path second r25" fill="none" cx="50" cy="50" r="25"/>
+                    <circle class="path tensecond r20" fill="none" cx="50" cy="50" r="20"/>
+                    <circle class="path minute r15" fill="none" cx="50" cy="50" r="15"/>
+                </g>
+            </svg>
+        </div>
+        <div class="controls">
+            <label for="toggle"></label>
+        </div>
+    </div>
+    <style>
+    html { color:rgb(30,30,30); }
+    body {
+        position:absolute;
+        display:table;
+        width:100%;
+        height:100%;
+        font:normal 1.8rem arial;
+        background:pink;
+    }
+    .container { 
+        position:absolute;
+        width:100%;
+        height:100%;
+        display:table;
+        text-align:center;
+    }
+    input { display:none; }
+    span { display:block; }
+    .time {
+        position:absolute;
+        box-sizing:border-box;
+        top:0;
+        left:0;
+        width:100%;
+        margin:0 auto;
+        text-align:center;
+    }
+    .time > div {
+        position:relative;
+        display:inline-block;
+    }
+    .time .timer div {
+        position:relative;
+        overflow:hidden;
+        display:inline-block;
+        width:1rem;
+        height:4rem;
+    }
+    .time .clock div {
+        letter-spacing:0.5rem;
+    }
+    .time div div span {
+        position:absolute;
+        top:0;
+        left:0;
+        width:100%;
+        line-height:4rem;
+    }
+    .time .clock div { width: auto; }
+    .clock div {
+        width: auto;
+    }
+    .ten:after { content: "0 1 2 3 4 5 6 7 8 9"; }
+    .six:after { content: "0 1 2 3 4 5"; }
+    .divider { width:0.6rem!important; }
+    .divider span:after { content: ":"; }
+    .svg {
+        display:table-cell;
+        vertical-align:middle;
+    }
+    svg {
+        position: relative;
+        width:40rem;
+        height:40rem;
+        -webkit-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+    }
+    .path {
+        stroke:ghostwhite;
+        stroke-width:1px;
+        -webkit-animation:dash linear infinite;
+    }
+    .timer .path { stroke:ghostwhite; }
+    label {
+        z-index: 3;
+        position: fixed;
+        width: 22rem;
+        height: 22rem;
+        top: 50%;
+        left: 50%;
+        margin-top: -11.25rem;
+        margin-left: -11.25rem;
+        cursor: pointer;
+    }
+    #toggle~.time .timer div span,
+    #toggle~.svg .timer .path {
+        -webkit-animation-play-state: paused;
+        xanimation-play-state: paused;
+    }
+    .clock span,
+    #toggle:checked~.time .timer span,
+    #toggle:checked~.svg .timer .path {
+        -webkit-animation-play-state: running;
+        animation-play-state: running;
+    }
+    .ten {
+        -webkit-animation: ten 1s steps(10, end) infinite;
+        animation: ten 1s steps(10, end) infinite;
+    }
+    .six {
+        -webkit-animation: six 1s steps(6, end) infinite;
+        animation: six 1s steps(6, end) infinite;
+    }
+    .ten,
+    .six {
+        -webkit-animation-play-state: paused;
+        animation-play-state: paused;
+    }
+    .milisecond { -webkit-animation-duration: 1ms; animation-duration: 1ms; }
+    .tenmilisecond { -webkit-animation-duration: 10ms; animation-duration: 10ms; }
+    .hundredmilisecond { -webkit-animation-duration: 100ms; animation-duration: 100ms; }
+    .second     { -webkit-animation-duration: 1s; animation-duration: 1s; }
+    .tensecond  { -webkit-animation-duration: 10s; animation-duration: 10s; }
+    .minute     { -webkit-animation-duration: 60s; animation-duration: 60s; }
+    .tenminute  { -webkit-animation-duration: 600s; animation-duration: 600s; }
+    .hour       { -webkit-animation-duration: 3600s; animation-duration: 3600s; }
+    .tenhour    { -webkit-animation-duration: 36000s; animation-duration: 36000s; }
+    .day        { -webkit-animation-duration: 86400s; animation-duration: 86400s; }
+    .r5 { -webkit-animation-name: r5; }
+    .r10 { -webkit-animation-name: r10; }
+    .r15 { -webkit-animation-name: r15; }
+    .r20 { -webkit-animation-name: r20; }
+    .r25 { -webkit-animation-name: r25; }
+    .r30 { -webkit-animation-name: r30; }
+    .r35 { -webkit-animation-name: r35; }
+    .r40 { -webkit-animation-name: r40; }
+    .r45 { -webkit-animation-name: r45; }
+    .r50 { -webkit-animation-name: r50; }
+    .r55 { -webkit-animation-name: r55; }
+    @-webkit-keyframes r5 {
+        0% { stroke-dashoffset: 31.4159; }
+        100% { stroke-dashoffset: 0; }
+    }
+    @-webkit-keyframes r10 {
+        0% { stroke-dashoffset: 62.8318; }
+        100% { stroke-dashoffset: 0; }
+    }
+    @-webkit-keyframes r15 {
+        0% { stroke-dashoffset: 94.2477; }
+        100% { stroke-dashoffset: 0; }
+    }
+    @-webkit-keyframes r20 {
+        0% { stroke-dashoffset: 125.6636; }
+        100% { stroke-dashoffset: 0; }
+    }
+    @-webkit-keyframes r25 {
+        0% { stroke-dashoffset: 157.0795; }
+        100% { stroke-dashoffset: 0; }
+    }
+    @-webkit-keyframes r30 {
+        0% { stroke-dashoffset: 188.4954; }
+        100% { stroke-dashoffset: 0; }
+    }
+    @-webkit-keyframes r35 {
+        0% { stroke-dashoffset: 219.9113; }
+        100% { stroke-dashoffset: 0; }
+    }
+    @-webkit-keyframes r40 {
+        0% { stroke-dashoffset: 251.3272; }
+        100% { stroke-dashoffset: 0; }
+    }
+    @-webkit-keyframes r45 {
+        0% { stroke-dashoffset: 282.7431; }
+        100% { stroke-dashoffset: 0; }
+    }
+    @-webkit-keyframes r50 {
+        0% { stroke-dashoffset: 314.1592; }
+        100% { stroke-dashoffset: 0; }
+    }
+    @-webkit-keyframes r55 {
+        0% { stroke-dashoffset: 345.5751; }
+        100% { stroke-dashoffset: 0; }
+    }
+    @-webkit-keyframes ten {    
+        from { top: 0; }
+        to { top: -40rem; } 
+    }
+    @keyframes ten {    
+        from { top: 0; }
+        to { top: -40rem; } 
+    }
+    @-webkit-keyframes six {
+        from { top: 0; }
+        to { top: -24rem; } 
+    }
+    @keyframes six {
+        from { top: 0; }
+        to { top: -24rem; } 
+    }
+    </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var $ = function(el) {
+            return document.querySelectorAll(el);
+        };
+
+        var svg = document.getElementsByTagName('svg')[0];
+        var timer = document.querySelector('.timer');
+        var clock = document.querySelector('.clock');
+        var clock_inner = document.createElement('div');
+        var currentTime = new Date();
+        var seconds = currentTime.getSeconds();
+        var minutes = currentTime.getMinutes();
+        var hours = currentTime.getHours();
+        minutes = minutes*60;
+        hours = hours*60*60*2;
+        seconds = seconds;
+        document.querySelector('.clock .minute').style.setProperty('-webkit-animation-delay',-seconds+"s");
+        document.querySelector('.clock .hour').style.setProperty('-webkit-animation-delay',-minutes+"s");
+        document.querySelector('.clock .day').style.setProperty('-webkit-animation-delay',-hours+"s");
+    
+        var paths = $('.path');
+        [].forEach.call(paths, function(path) {
+            var len = path.getAttribute('r');
+            len = len*2*3.14159;
+            path.style.setProperty('stroke-dasharray',len.toFixed(2));
+        });
+
+        function displayTime() {
+            currentTime = new Date();
+            seconds = currentTime.getSeconds();
+            minutes = currentTime.getMinutes();
+            hours = currentTime.getHours();
+            if (seconds < 10)
+                seconds = "0" + seconds;
+            if (minutes < 10)
+                minutes = "0" + minutes;
+            if (hours < 10)
+                hours = "0" + hours;
+            clock_inner.innerText = hours + ":" + minutes + ":" + seconds;
+        }
+        clock.appendChild(clock_inner);
+        setInterval(displayTime, 1000);
+        displayTime();
+    });
+    </script>
+</body>
+</html>
+    

@@ -1,0 +1,224 @@
+<html style="font-size:62.5%;">
+<head>
+    <title>Ruler</title>
+</head>
+<body>
+    <input type="radio" name="system" id="px" value="px"></input>
+    <input type="radio" name="system" id="mm" value="mm" checked="checked"></input>
+    <input type="radio" name="system" id="in" value="in"></input>
+    <aside>
+        <div class="size" contentEditable>15.4</div>
+        <label for="px"><span>Pixels</span></label>
+        <label for="mm"><span>Metric</span></label>
+        <label for="in"><span>Imperial</span></label>
+        <div class="px">
+            <span class="width">0</span>,<span class="height">0</span> px
+        </div>
+        <div class="mm">
+            <span class="width">0</span>,<span class="height">0</span> mm
+        </div>
+        <div class="in">
+            <span class="width">0</span>,<span class="height">0</span> in
+        </div>
+    </aside>
+    <main></main>
+    <style>
+    html {
+        background-color:lightcoral;
+        color:rgb(230,230,230);
+    }
+    body {
+        font:normal 1.8rem arial;
+        overflow:hidden;
+    }
+    canvas { 
+        position:absolute;
+        top:0;
+        left:0;
+        z-index:-1;
+        -webkit-transform:translateX(100%);
+    }
+    main,aside { box-sizing:border-box; }
+    main {
+        width:calc(100% - 14rem);
+        height:100%;
+        cursor:crosshair;
+    }
+    aside { 
+        z-index:1; 
+        position:fixed;
+        right:0; 
+        top:0;
+        padding:1.5rem;
+        width:14rem;
+        background-color:rgb(90,90,90);
+        height:100%;
+    }
+    em { font-style: normal; }
+    aside > * {
+        display:inline-block;
+        width:100%;
+        padding:1.5rem;
+        margin-bottom:2rem;
+        border-radius:0.5rem;
+        border:0.1rem solid rgb(230,230,230);
+        cursor:pointer;
+        box-sizing:border-box;
+    }
+    div.px,div.mm,div.in {
+        border:0;
+        padding:0.5rem 1.5rem;
+        padding:0.5rem 0;
+    }
+    aside > div:last-child { margin-bottom:0; }
+    .size:hover,
+    label:hover { background-color:rgba(0,0,0,0.1); }
+    .size:active,
+    label:active { background-color:rgba(0,0,0,0.2); }
+    input { display:none; }
+    #px:checked ~ aside label[for=px] { background-color:rgba(0,0,0,0.3); }
+    #mm:checked ~ aside label[for=mm] { background-color:rgba(0,0,0,0.3); }
+    #in:checked ~ aside label[for=in] { background-color:rgba(0,0,0,0.3); }
+    #px:checked ~ main .px {
+        -webkit-transform:translateX(0);
+    }
+    #mm:checked ~ main .mm {
+        -webkit-transform:translateX(0);
+    }
+    #in:checked ~ main .in {
+        -webkit-transform:translateX(0);
+    }
+    .highlight {
+        position:absolute;
+        z-index:-2;
+        top:0;
+        left:0;
+        background-color:indianred;
+    }
+    </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        var sw      = screen.width,
+            sh      = screen.height,
+            ratio   = sw/sh;
+
+        var main    = document.querySelector('main'),
+            size    = document.querySelector('.size');
+
+        var font = "normal 14px arial";
+
+        var ppm,
+            ppi;
+
+        function addRuler(system,inc,size,step) {
+            var canvas = createHiDPICanvas(sw, sh, 1.6);
+            var ctx = canvas.getContext('2d');
+            canvas.classList.add(system);
+            ctx.font = font;
+            for (i = 0; i < sw; i = i + size) {
+                ctx.beginPath();
+                ctx.moveTo(inc*i, 0);
+                ctx.lineTo(inc*i, sh);
+                ctx.moveTo(0, inc*i);
+                ctx.lineTo(sw, inc*i);
+                ctx.strokeStyle = "rgba(230,230,230,0)";
+                ctx.stroke();
+            }
+            for (i = 1; i < sw; i++) {
+                ctx.textBaseline = "middle";
+                if (i % step == 0) {
+                    ctx.fillStyle = "rgb(90,90,90)";
+                    ctx.textAlign = "center"; 
+                    ctx.fillText("\u007c", inc*i, 4);
+                    ctx.fillText(i, inc*i, 22);
+                    ctx.textAlign = "left"; 
+                    ctx.fillText("\u2014 "+i, -4, inc*i);
+                }
+            }
+            main.appendChild(canvas);
+        }
+
+        function addAll() {
+            var num = Math.sqrt(Math.pow(ratio, 2) + 1),
+                height = size.innerHTML/num,
+                width = height*ratio;
+
+            ppmm = (sw/(width*2.54))/10,
+            ppi = (sw/width)/16;
+          
+            addRuler("px",1,50,100);
+            addRuler("mm",ppmm,10,50);
+            addRuler("in",ppi,8,16);
+        }
+
+        size.addEventListener('keyup', function(e) {
+            while (main.firstChild) {
+                main.removeChild(main.firstChild);
+            }
+            addAll();
+        });
+
+        var isDown = false;
+
+        main.addEventListener('mousedown', function(e) {
+            isDown = true;
+            update();
+        });
+    
+        main.addEventListener('mousemove', function(e) {
+            mx = e.pageX;
+            my = e.pageY;
+            if (isDown) {
+                update();
+            }
+        });
+
+        main.addEventListener('mouseup', function(e) {
+            isDown = false; 
+        });
+
+        main.addEventListener('mouseleave', function(e) {
+            isDown = false; 
+        });
+
+        var highlight = document.createElement('div');
+            highlight.classList.add('highlight');
+            document.body.appendChild(highlight);
+
+        var mx = 0,
+            my = 0;
+
+        var px_width = document.querySelector('.px .width'),
+            px_height = document.querySelector('.px .height'),
+            mm_width = document.querySelector('.mm .width'),
+            mm_height = document.querySelector('.mm .height'),
+            in_width = document.querySelector('.in .width'),
+            in_height = document.querySelector('.in .height');
+
+        function update() {
+            highlight.style.width = mx+"px";
+            highlight.style.height = my+"px";
+            px_width.textContent = mx;
+            px_height.textContent = my;
+            mm_width.textContent = Math.ceil(mx/ppmm);
+            mm_height.textContent = Math.ceil(my/ppmm);
+            in_width.textContent = Math.round(mx/(ppi*16)*100)/100;
+            in_height.textContent = Math.round(my/(ppi*16)*100)/100;
+        }
+
+        function createHiDPICanvas(w, h, ratio) {
+            var can = document.createElement("canvas");
+            can.width = w * ratio;
+            can.height = h * ratio;
+            can.style.width = w + "px";
+            can.style.height = h + "px";
+            can.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
+            return can;
+        }
+        
+        addAll();
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<html>
+<head>
+<link id="favicon" rel="shortcut icon" type="image/png" href="favicon-sprite.png" />
+</head>
+<body>
+
+<img src="sprite.png" id="sprite" />
+<canvas width="24" height="24" id="canvas"></canvas>
+</body>
+</html>
+
+<script>
+/*var canvas = document.createElement('canvas');
+canvas.width = 32;
+canvas.height = 32;
+var ctx = canvas.getContext('2d');
+var img = new Image();
+img.src = '/assets/images/favicon-sprite.png';
+img.onload = function() {
+    ctx.drawImage(img, 0, 0);
+    ctx.fillStyle = 'Black';
+    ctx.fillRect(0, 0, 32, 32);
+    var link = document.createElement('link');
+    link.type = 'image/x-icon';
+    link.rel = 'shortcut icon';
+    link.href = canvas.toDataURL("image/x-icon");
+    document.getElementsByTagName('head')[0].appendChild(link);
+}*/
+
+var size = 24;
+var _x = 0;
+var interval;
+function animateFavIcon() {
+	if (_x < -size) {
+		clearInterval(interval);
+		_x = 0;
+		init();
+	}
+	var canvas = document.getElementById("canvas");
+	var ctx = canvas.getContext("2d");
+	ctx.globalCompositeOperation = 'source-over';
+	ctx.fillStyle = 'transparent';
+	ctx.clearRect(0,0,size,size);
+	ctx.fillRect(0,0,size,size);
+	ctx.drawImage(document.getElementById("sprite"), _x, 0);
+	var favOrig = document.getElementById("favicon");
+	var favClone = favOrig.cloneNode(true);
+	favClone.setAttribute('href',ctx.canvas.toDataURL());
+	favOrig.parentNode.replaceChild(favClone, favOrig);
+	_x = _x-size;
+}
+function init(){
+	interval = setInterval(animateFavIcon,size*20);
+}
+init();
+</script>
+

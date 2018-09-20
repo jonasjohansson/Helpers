@@ -1,0 +1,206 @@
+<html style="font-size:62.5%;">
+<head>
+</head>
+<body style="margin:0;" class="col1">
+    <input type="radio" name="content" id="all" value="all" checked="checked">
+    <input type="radio" name="content" id="links" value="links">
+    <input type="radio" name="content" id="images" value="images">
+    <input type="radio" name="content" id="texts" value="texts">
+    <main>
+        <menu>
+            <input name="c1" data-name="col1" type="color" value="#eeeeee">
+            <input name="c2" data-name="col2" type="color" value="#cccccc">
+            <input name="c3" data-name="col1" data-type="text" type="color" value="#bbbbbb">
+        </menu>
+        <section></section>
+    </main>
+    <aside class="col2">
+        <label class="all" for="all"><em><span>all</span></em></label>
+        <label class="links" for="links"><em><span>links</span></em></label>
+        <label class="images" for="images"><em><span>images</span></em></label>
+        <label class="texts" for="texts"><em><span>text</span></em></label>
+    </aside>
+    <style>
+    main {
+        float:left;
+        width:calc(100% - 14rem);
+        height:100%;
+    }
+    menu {
+        width:100%;
+        height:8rem;
+        margin:0;
+    }
+    menu input {
+        float:left;
+        width:33.33%;
+        height:100%;
+        padding:0;
+        border:0;
+    }
+    menu input::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+    menu input::-webkit-color-swatch {
+        border: none;
+    }
+    section > div,
+    body > input {
+        display:none!important;
+    }
+    #all:checked ~ main section > div {
+        display:table-row!important;
+    }
+    #links:checked ~ main section .link {
+        display:table-row!important;
+    }
+    #images:checked ~ main section .image {
+        display:table-row!important;
+    }
+    #texts:checked ~ main section .text {
+        display:table-row!important;
+    }
+    #links:checked + label span { 
+        background-color: rgba(0,0,0,0.1);
+    }
+    input[type="radio"] { 
+        display: none; 
+    }
+    label { 
+        margin-bottom: 1rem; 
+        position: relative; 
+        display: block; 
+        cursor: pointer; 
+    }
+    label span { 
+        display: block;
+        width: 100%;
+        height: 4rem;
+        border-radius: 0.4rem;
+    }
+    input[type="radio"] + label span:hover { 
+        opacity: 0.8; 
+    }
+    label em { 
+        position: relative; 
+        top: 0;
+        width: 100%; 
+        line-height: 4rem; 
+        text-align: center; 
+    }
+    section {
+        width:100%;
+        padding:1rem;
+        display:table;
+        font-family:Monaco;
+        font-size:14px;
+        box-sizing:border-box;
+    }
+    section div {
+        display: table-row;
+        counter-increment: linecounter;
+        padding-left: 1rem;
+    }
+    img {
+        display: none;
+    }
+    section div:before {
+        float: left;
+        display: table-cell;
+        padding: 0.1rem 1rem 0.1rem 1rem;
+        margin-right: 1rem;
+        content: counter(linecounter,decimal-leading-zero);
+    }
+    aside {
+        float: right;
+        width: 14rem;
+        height: 100%;
+    }
+    </style>
+    <script src="https://www.dropbox.com/static/api/dropbox-datastores-1.0-latest.js"></script>
+    <script>
+
+    function createCookie(name,value,days) {
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime()+(days*24*60*60*1000));
+            var expires = "; expires="+date.toGMTString();
+        }
+        else var expires = "";
+        document.cookie = name+"="+value+expires+"; path=/";
+    }
+
+    function readCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    }
+
+    function eraseCookie(name) {
+        createCookie(name,"",-1);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        function Read(file) {
+            client.readFile(file, function (error, data) {
+                textarea.innerHTML = data;
+            });
+        }
+
+        var client      = new Dropbox.Client({ key: '91n7kq2goawbg88' })
+            textarea    = document.querySelector('section'),
+            input       = document.createElement("input"),
+            btn         = Dropbox.createChooseButton({
+            success: function(files) {
+                Read(files[0].name);
+            }
+        });
+
+        document.body.appendChild(btn);
+
+        client.authenticate({interactive: false}, function (error, client) {
+            if (error) {
+                alert('Error: ' + error);
+            }
+        });
+
+        if (client.isAuthenticated()) {
+            Read("log.html");
+        }
+
+        inputs = document.querySelectorAll('menu input');
+        [].forEach.call(inputs, function(input) {
+            var name = input.getAttribute('data-name'),
+                type = input.getAttribute('data-type'),
+                el   = document.querySelector("."+name);
+
+            if (val = readCookie(input.name)) {
+                input.value = val;
+                (type == 'text') ? el.style.color = val : el.style.backgroundColor = val;
+            }
+
+            input.onchange = function(e) {
+                var _this = e.target,
+                    name = _this.getAttribute('data-name'),
+                    type = _this.getAttribute('data-type'),
+                    el = document.querySelector("."+name),
+                    val = _this.value;
+
+                (type == 'text') ? el.style.color = val : el.style.backgroundColor = val;
+
+                createCookie(_this.name, val, 7);
+            }
+
+        }); 
+
+    });
+    </script>
+    <script src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="91n7kq2goawbg88"></script>
+</body>
+</html>

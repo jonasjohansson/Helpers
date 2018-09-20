@@ -1,0 +1,201 @@
+<html style="font-size:62.5%;">
+<head>
+    <title>Colors</title>
+</head>
+<body style="margin:0;">
+    <div>
+        <div>
+            <div id="width" class="number" data-default="100">
+                <div class="val" contentEditable>100</div>
+                <span class="btn add">&#43;</span>
+            </div>
+            <span>pixels wide</span>
+        </div>
+    </div>
+    <div>
+        <div>
+            <div id="height" class="number" data-default="100">
+                <div class="val" contentEditable>100</div>
+                <span class="btn add">&#43;</span>
+            </div>
+            <span>pixels high</span>
+        </div>
+    </div>
+    <div>
+        <div>
+            <span>In</span>
+            <div id="color" data-default="#000000">
+                <div class="val" contentEditable>RoyalBlue</div>
+                <span class="btn add">&#43;</span>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div>
+            <span>Create</span>
+            <div id="amount" class="number">
+                <div class="val" contentEditable>1</div>
+            </div>
+            <span class="btn svg generate">svg</span>
+            <span class="btn png generate">png</span>
+        </div>
+    </div>
+    <canvas id="canvas" width="0" height="0"></canvas>
+    <style>
+    html { color:rgb(30,30,30); }
+    body {
+        font:normal 1.8rem arial;
+        background-color:#C71585;
+    }
+    canvas {  
+        z-index:-1;
+        position:fixed;
+        top:100%;
+        display:none; 
+    }
+    body > div {
+        position:relative;
+        clear:both;
+        margin:0 auto;
+    }
+    body > div > div {
+        padding:3.6rem;
+        max-width:80%;
+    }
+    body > div div div div {
+        text-decoration:underline;
+    }
+    body > div div div,
+    div span { display:inline; }
+    body > div:nth-child(1) { background-color:#FFC0CB; }
+    body > div:nth-child(2) { background-color:#FFB6C1; }
+    body > div:nth-child(3) { background-color:#FF69B4; }
+    body > div:nth-child(4) { background-color:#FF1493; }
+    .btn {
+        position:absolute;
+        top:2rem;
+        right:2rem;
+        padding:1.5rem;
+        border-radius:0.5rem;
+        border:0.1rem solid rgb(30,30,30);
+        cursor:pointer;
+    }
+    .svg {
+        right:10rem;
+    }
+    .btn:hover { background-color:rgba(0,0,0,0.1); }
+    .btn:active { background-color:rgba(0,0,0,0.2); }
+    </style>
+    <script src="canvas2svg.js"></script>
+    <script src="base64.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        var $ = function(el) {
+            return document.querySelectorAll(el);
+        };
+        
+        function Square(width,height,color) {
+        }
+        
+        function Random(max) {
+            return Math.floor((Math.random()*max));
+        }
+
+        var adds = $('.add');
+        [].forEach.call(adds, function(add) {
+            add.addEventListener('click', function(e) {
+                var _this = e.currentTarget;
+                var span = document.createElement('span');
+                var div = document.createElement('div');
+                span.classList.add('separator');
+                div.classList.add('val');
+                div.innerHTML = _this.parentNode.getAttribute('data-default');
+                div.setAttribute('contentEditable', true);
+                _this.parentNode.insertBefore(span, _this.parentNode.firstChild);
+                _this.parentNode.insertBefore(div, _this.parentNode.firstChild);
+                separators = _this.parentNode.querySelectorAll('.separator');
+                [].forEach.call(separators, function(separator, i) {
+                    separator.innerHTML = '&#44&nbsp;';
+                    if (i == separators.length-1) {
+                        separator.innerHTML = '&nbsp;&#38&nbsp;';
+                    }
+                });
+            });
+        });
+
+        var vals = $('.number .val');
+        [].forEach.call(vals, function(val) {
+            val.addEventListener('keydown', function(e) {
+                length = e.currentTarget.innerText.length;
+                if (e.which < 47 || e.which > 57) {
+                    //e.preventDefault();
+                }
+            });
+        });
+
+        var generates = $('.generate');
+        [].forEach.call(generates, function(generate) {
+            generate.addEventListener('click', function(e) {
+                var amount,
+                    widths = new Array(),
+                    heights = new Array(),
+                    colors = new Array();
+
+                amount = document.querySelector('#amount .val').innerText;
+
+                [].forEach.call(document.querySelectorAll('#width .val'), function(val) {
+                    widths.push(val.innerText);
+                });
+
+                [].forEach.call(document.querySelectorAll('#height .val'), function(val) {
+                    heights.push(val.innerText);
+                });
+
+                [].forEach.call(document.querySelectorAll('#color .val'), function(val) {
+                    colors.push(val.innerText);
+                });
+
+                var zip = new JSZip();
+                var folder = zip.folder('images');
+                for (var i = 0; i < amount; i++) {
+                    var r1 = Random(widths.length);
+                    var r2 = Random(heights.length);
+                    var r3 = Random(colors.length);
+                    var width = widths[r1];
+                    var height = heights[r2];
+                    var color = colors[r3];
+                    var name = width+"x"+height+"-"+color+"-"+(i+1);
+                    var image = new Image();
+                    
+                    if (e.currentTarget.className.indexOf('png') > -1) {
+                        var canvas = document.getElementById('canvas');
+                        var context = canvas.getContext('2d');
+                        canvas.width = width;
+                        canvas.height = height;
+                        context.fillStyle = color;
+                        context.fillRect(0,0,width,height);
+                        name += '.png';
+                        image.src = canvas.toDataURL("image/png");
+                        folder.file(name, image.src.substr(image.src.indexOf(',')+1), {base64: true});
+                    } else {
+                        var context = new C2S(width,height);
+                        context.fillStyle = color;
+                        context.fillRect(0,0,width,height);
+                        var svg = context.getSerializedSvg(true);
+                        name += '.svg';
+                        folder.file(name, svg, {base64: false});
+                    }
+                }
+                generate.setAttribute('download', amount+'_images.zip');
+                generate.setAttribute('href', window.URL.createObjectURL(zip.generate({type:"blob"})));
+                window.location.href = window.URL.createObjectURL(zip.generate({type:"blob"}));
+                return false;
+            });
+        });
+    });
+    </script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.2.2/jszip.js"></script>
+</body>
+</html>
+    
