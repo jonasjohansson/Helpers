@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <link rel="stylesheet" href="https://rawgit.com/jonasjohansson/template/master/reset.css">
+    <script src="https://unpkg.com/dom-to-image@2.6.0/src/dom-to-image.js"></script>
+</head>
+<body>
+    <script>
+    var node = document.createElement('div');
+    var url = new URL(window.location.href);
+    var background = url.searchParams.get('background') || 'FF0000';
+    var color = url.searchParams.get('color') || '0000FF';
+    var name = url.searchParams.get('name') || 'UI';
+    var radius = url.searchParams.get('radius') || 0;
+    var size = url.searchParams.get('size') || 512;
+    document.body.style.backgroundColor = `#${color}`;
+    node.style.backgroundColor = `#${background}`;
+    node.style.color = `#${color}`;;
+    node.style.textAlign = 'center';
+    node.style.lineHeight = `${size}px`;
+    node.style.fontSize = `${size*0.5}px`;
+    node.innerHTML = name;
+    node.style.borderRadius = `${radius}`;
+    node.style.width = `${size}px`;
+    node.style.height = `${size}px`;
+    document.body.appendChild(node);
+    domtoimage.toPng(node)
+        .then(function (dataUrl) {
+            var img = new Image();
+            img.src = dataUrl;
+            document.body.appendChild(img);
+            document.body.removeChild(node);
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
+    </script>
+</body>
+</html>
