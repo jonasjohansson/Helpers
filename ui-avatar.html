@@ -5,37 +5,125 @@
     <meta name="viewport" content="width=device-width,user-scalable=no">
     <link rel="stylesheet" href="https://rawgit.com/jonasjohansson/template/master/reset.css">
     <script src="https://unpkg.com/dom-to-image@2.6.0/src/dom-to-image.js"></script>
+    <style>
+	body {
+		background-color:gray;
+		color:white;
+	}
+    menu {
+        height:10vh;
+    }
+    menu > * {
+        float:left;
+        width:20%;
+        height:100%;
+        text-align:center;
+    }
+    input {
+    	position:relative;
+		color:inherit;
+    }
+    input[type=color]:after {
+    	position:absolute;
+    	display:block;
+    	top:0;
+    	left:0;
+    	width:100%;
+    	line-height:10vh;
+    	content:attr(data-value);
+    }
+    div {
+    	position:relative;
+        height:90vh;
+        text-align:center;
+        pointer-events:none;
+        background-color:black;
+    	top:0;
+    	left:0;
+    }
+    </style>
 </head>
 <body>
-    <script>
-    var node = document.createElement('div');
-    var url = new URL(window.location.href);
-    var background = url.searchParams.get('background') || 'FF0000';
-    var color = url.searchParams.get('color') || '0000FF';
-    var name = url.searchParams.get('name') || 'UI';
-    var radius = url.searchParams.get('radius') || 0;
-    var size = url.searchParams.get('size') || 512;
-    document.body.style.backgroundColor = `#${color}`;
-    node.style.backgroundColor = `#${background}`;
-    node.style.color = `#${color}`;;
-    node.style.textAlign = 'center';
-    node.style.lineHeight = `${size}px`;
-    node.style.fontSize = `${size*0.5}px`;
-    node.innerHTML = name;
-    node.style.borderRadius = `${radius}`;
-    node.style.width = `${size}px`;
-    node.style.height = `${size}px`;
-    document.body.appendChild(node);
-    domtoimage.toPng(node)
-        .then(function (dataUrl) {
-            var img = new Image();
-            img.src = dataUrl;
-            document.body.appendChild(img);
-            document.body.removeChild(node);
-        })
-        .catch(function (error) {
-            console.error(error);
-        });
-    </script>
+    <menu>
+        <input type="color" id="background" value="#5a00c4">
+        <input type="color" id="color" value="#ff5e53">
+        <input type="range" id="radius" min="0" max="50" value="0" step="10">
+        <input type="number" id="size" min="512" max="1024" value="512" step="512">
+        <input type="submit" id="submit" value="Download">
+    </menu>
+	<script>
+		var node = document.createElement('div');
+
+		document.body.appendChild(node);
+
+		var background = document.getElementById('background');
+		var color = document.getElementById('color');
+		var radius = document.getElementById('radius');
+		var size = document.getElementById('size');
+		var text = document.getElementById('text');
+		var submit = document.getElementById('submit');
+
+		var text = 'YO';
+
+		node.innerHTML = text;
+
+		background.onchange = e => {
+			node.style.backgroundColor = e.target.value;
+			e.target.setAttribute('data-value', e.target.value);
+		};
+
+		color.onchange = e => {
+			node.style.color = e.target.value;
+			e.target.setAttribute('data-value', e.target.value);
+		};
+
+		radius.onchange = e => {
+			node.style.borderRadius = `${radius.value}%`;
+		};
+
+		size.onchange = e => {
+			var width = e.target.value;
+			node.style.width = `${width}px`;
+			node.style.height = `${width}px`;
+			node.style.lineHeight = `${width}px`;
+			node.style.fontSize = `${width * 0.6}px`;
+		};
+
+		submit.onclick = e => {
+			domtoimage
+				.toPng(node)
+				.then(function(dataUrl) {
+					var link = document.createElement('a');
+					link.download = `${node.innerHTML}-avatar-${size.value}.png`;
+					link.href = dataUrl;
+					link.click();
+				})
+				.catch(function(error) {
+					console.error(error);
+				});
+		};
+
+		window.addEventListener('keydown', e => {
+			if (e.keyCode === 8) {
+				text = '';
+				node.innerHTML = text;
+			}
+		});
+
+		window.addEventListener('keypress', e => {
+			if (text.length < 2) text += String.fromCharCode(e.keyCode);
+			else text = String.fromCharCode(e.keyCode);
+			node.innerHTML = text;
+		});
+
+		var inputs = document.querySelectorAll('input');
+		inputs = Array.prototype.slice.call(inputs);
+
+		inputs.forEach(input => {
+			var event = new Event('change');
+			input.dispatchEvent(event);
+		});
+
+	</script>
 </body>
 </html>
