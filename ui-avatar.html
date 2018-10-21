@@ -7,21 +7,25 @@
     <script src="https://unpkg.com/dom-to-image@2.6.0/src/dom-to-image.js"></script>
     <style>
 	body {
+		overflow:hidden;
 		background-color:gray;
 		color:white;
 	}
     menu {
-        height:10vh;
+        height:20vh;
     }
     menu > * {
-        float:left;
-        width:20%;
-        height:100%;
+    	float:left;
+        width:33.33%;
+        height:calc(100% / 2);
         text-align:center;
     }
     input {
     	position:relative;
 		color:inherit;
+    }
+    input[type=submit] {
+    	filter:hue-rotate(90deg);
     }
     input[type=color]:after {
     	position:absolute;
@@ -34,7 +38,7 @@
     }
     div {
     	position:relative;
-        height:90vh;
+        height:70vh;
         text-align:center;
         pointer-events:none;
         background-color:black;
@@ -47,9 +51,10 @@
     <menu>
         <input type="color" id="background" value="#5a00c4">
         <input type="color" id="color" value="#ff5e53">
+        <input type="submit" id="submit" value="Download">
         <input type="range" id="radius" min="0" max="50" value="0" step="10">
         <input type="number" id="size" min="512" max="1024" value="512" step="512">
-        <input type="submit" id="submit" value="Download">
+        <input type="text" id="text" maxlength="3" value="UI">
     </menu>
 	<script>
 		var node = document.createElement('div');
@@ -63,12 +68,11 @@
 		var text = document.getElementById('text');
 		var submit = document.getElementById('submit');
 
-		var text = 'YO';
-
-		node.innerHTML = text;
+		node.innerHTML = text.value;
 
 		background.onchange = e => {
 			node.style.backgroundColor = e.target.value;
+			submit.style.backgroundColor = e.target.value;
 			e.target.setAttribute('data-value', e.target.value);
 		};
 
@@ -86,7 +90,11 @@
 			node.style.width = `${width}px`;
 			node.style.height = `${width}px`;
 			node.style.lineHeight = `${width}px`;
-			node.style.fontSize = `${width * 0.6}px`;
+			node.style.fontSize = `${width * 0.5}px`;
+		};
+
+		text.onkeyup = e => {
+			node.innerHTML = e.target.value;
 		};
 
 		submit.onclick = e => {
@@ -103,18 +111,18 @@
 				});
 		};
 
-		window.addEventListener('keydown', e => {
-			if (e.keyCode === 8) {
-				text = '';
-				node.innerHTML = text;
-			}
-		});
+		// window.addEventListener('keydown', e => {
+		// 	if (e.keyCode === 8) {
+		// 		text = '';
+		// 		node.innerHTML = text;
+		// 	}
+		// });
 
-		window.addEventListener('keypress', e => {
-			if (text.length < 2) text += String.fromCharCode(e.keyCode);
-			else text = String.fromCharCode(e.keyCode);
-			node.innerHTML = text;
-		});
+		// window.addEventListener('keypress', e => {
+		// 	if (text.length < 2) text += String.fromCharCode(e.keyCode);
+		// 	else text = String.fromCharCode(e.keyCode);
+		// 	node.innerHTML = text;
+		// });
 
 		var inputs = document.querySelectorAll('input');
 		inputs = Array.prototype.slice.call(inputs);
@@ -122,6 +130,10 @@
 		inputs.forEach(input => {
 			var event = new Event('change');
 			input.dispatchEvent(event);
+			if (input.type === 'text'){
+				var event = new Event('keyup');
+				input.dispatchEvent(event);
+			}
 		});
 
 	</script>
