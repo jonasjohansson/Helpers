@@ -23,7 +23,11 @@
 	var span = document.createElement("span");
 	div.appendChild(span);
 	document.body.appendChild(div);
-	span.innerHTML = "Press Key";+
+	span.innerHTML = "Press Key";
+	window.addEventListener("keydown", function(event){
+		event.preventDefault();
+		span.innerHTML = event.keyCode;
+	});
 	</script>
 </body>
 </html>
