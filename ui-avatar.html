@@ -52,8 +52,9 @@
         <input type="color" id="background" value="#5a00c4">
         <input type="color" id="color" value="#ff5e53">
         <input type="submit" id="submit" value="Download">
-        <input type="range" id="radius" min="0" max="50" value="0" step="10">
-        <input type="number" id="size" min="512" max="1024" value="512" step="512">
+        <!-- <input type="range" id="radius" min="0" max="50" value="0" step="10"> -->
+        <input type="number" id="width" value="512">
+        <input type="number" id="height" value="512">
         <input type="text" id="text" maxlength="3" value="UI">
     </menu>
 	<script>
@@ -64,7 +65,8 @@
 		var background = document.getElementById('background');
 		var color = document.getElementById('color');
 		var radius = document.getElementById('radius');
-		var size = document.getElementById('size');
+		var width = document.getElementById('width');
+		var height = document.getElementById('height');
 		var text = document.getElementById('text');
 		var submit = document.getElementById('submit');
 
@@ -81,16 +83,20 @@
 			e.target.setAttribute('data-value', e.target.value);
 		};
 
-		radius.onchange = e => {
-			node.style.borderRadius = `${radius.value}%`;
-		};
+		// radius.onchange = e => {
+		// 	node.style.borderRadius = `${radius.value}%`;
+		// };
 
-		size.onchange = e => {
+		width.onchange = e => {
 			var width = e.target.value;
 			node.style.width = `${width}px`;
-			node.style.height = `${width}px`;
-			node.style.lineHeight = `${width}px`;
-			node.style.fontSize = `${width * 0.5}px`;
+		};
+
+		height.onchange = e => {
+			var height = e.target.value;
+			node.style.height = `${height}px`;
+			node.style.lineHeight = `${height}px`;
+			node.style.fontSize = `${height * 0.5}px`;
 		};
 
 		text.onkeyup = e => {
