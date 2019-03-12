@@ -5,47 +5,6 @@
     <meta name="viewport" content="width=device-width,user-scalable=no">
     <link rel="stylesheet" href="https://rawgit.com/jonasjohansson/template/master/reset.css">
     <script src="https://unpkg.com/dom-to-image@2.6.0/src/dom-to-image.js"></script>
-    <style>
-	body {
-		overflow:hidden;
-		background-color:gray;
-		color:white;
-	}
-    menu {
-        height:20vh;
-    }
-    menu > * {
-    	float:left;
-        width:33.33%;
-        height:calc(100% / 2);
-        text-align:center;
-    }
-    input {
-    	position:relative;
-		color:inherit;
-    }
-    input[type=submit] {
-    	filter:hue-rotate(90deg);
-    }
-    input[type=color]:after {
-    	position:absolute;
-    	display:block;
-    	top:0;
-    	left:0;
-    	width:100%;
-    	line-height:10vh;
-    	content:attr(data-value);
-    }
-    div {
-    	position:relative;
-        height:70vh;
-        text-align:center;
-        pointer-events:none;
-        background-color:black;
-    	top:0;
-    	left:0;
-    }
-    </style>
 </head>
 <body>
     <menu>
