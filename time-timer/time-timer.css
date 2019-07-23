@@ -1,0 +1,61 @@
+body {
+	font-family: -apple-system, sans-serif;
+	font-weight: bold;
+	font-size: 2rem;
+	margin: 0;
+}
+
+.svg-container {
+	display: inline-block;
+	position: relative;
+	width: 60%;
+	padding-bottom: 60%;
+	vertical-align: middle;
+	overflow: hidden;
+}
+
+.svg-content {
+	display: inline-block;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+/* circle */
+
+circle {
+	cx: 0;
+	cy: 0;
+}
+
+circle#bg {
+	r: 150;
+	fill: white;
+}
+
+circle#fg {
+	r: 150;
+	fill: transparent;
+	stroke: white;
+	stroke-width: 300;
+	stroke-dasharray: 0 942;
+}
+
+/* marks */
+
+.label {
+	position: relative;
+	margin-left: -1rem;
+}
+
+#marks {
+	stroke: black;
+}
+
+.small {
+	stroke-width: 0.5;
+}
+
+.large {
+	stroke-width: 1;
+}
