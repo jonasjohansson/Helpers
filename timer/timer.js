@@ -33,7 +33,7 @@ function stopWatch() {
 	}
 	console.log(minutes, seconds);
 
-	if (minutes === -1 && seconds === 60) {
+	if (minutes === -1) {
 		document.getElementById('display').innerHTML = 'Done!';
 	} else {
 		displayTime();
