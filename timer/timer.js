@@ -33,9 +33,10 @@ function stopWatch() {
 	}
 
 	if (minutes === 0 && seconds === 0) {
+		document.getElementById('display').innerHTML = 'Done!';
+	} else {
+		displayTime();
 	}
-
-	displayTime();
 }
 
 function displayTime() {
