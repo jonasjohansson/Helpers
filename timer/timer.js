@@ -31,8 +31,9 @@ function stopWatch() {
 		seconds = 60;
 		minutes--;
 	}
+	console.log(minutes, seconds);
 
-	if (minutes === 0 && seconds === 0) {
+	if (minutes <= 0 && seconds <= 0) {
 		document.getElementById('display').innerHTML = 'Done!';
 	} else {
 		displayTime();
