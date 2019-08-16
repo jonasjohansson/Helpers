@@ -8,7 +8,6 @@ body {
 	background: linear-gradient(180deg, rgba(60, 182, 121, 1) 0%, rgba(60, 169, 141, 1) 35%, rgba(0, 212, 255, 1) 66%);
 	color: rgba(255, 255, 255, 0.6);
 	overflow: hidden;
-	cursor: pointer;
 }
 
 #visual {
@@ -40,6 +39,14 @@ body {
 
 html.started #visual {
 	animation-play-state: running;
+}
+
+html:not(.started) {
+	cursor: pointer;
+}
+
+html.started {
+	cursor: wait;
 }
 
 html:not(.started) #visual {
