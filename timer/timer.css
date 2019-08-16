@@ -1,5 +1,5 @@
 body {
-	font-family: 'Khula-Regular', -apple-system, sans-serif;
+	font-family: 'Khula', -apple-system, sans-serif;
 	font-weight: bold;
 	font-size: 20vw;
 	margin: 0;
@@ -72,8 +72,8 @@ html:not(.started) #visual {
 }
 
 @font-face {
-	font-family: 'Khula-Regular';
-	src: url('assets/Khula-Regular.woff2') format('woff2');
+	font-family: 'Khula';
+	src: url('assets/Khula-ExtraBold.woff2') format('woff2');
 	font-weight: normal;
 	font-style: normal;
 }
