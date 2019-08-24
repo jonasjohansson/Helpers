@@ -1,5 +1,4 @@
-let seconds = 0;
-let minutes;
+let minutes, seconds;
 let color, style;
 let status = 'stopped';
 
@@ -11,20 +10,23 @@ window.onload = function() {
 	minutes = params.minutes === undefined ? 5 : Number(params.minutes);
 	color = params.color === undefined ? 'red' : params.color;
 	animation = params.style === undefined ? 0 : Number(params.animation);
+	seconds = minutes * 60;
 
 	document.documentElement.style.setProperty('--color', color);
 	document.documentElement.style.setProperty('--animation', `visual-${animation}`);
-	document.documentElement.style.setProperty('--seconds', `${minutes * 60}s`);
+	document.documentElement.style.setProperty('--seconds', `${seconds}s`);
+
+	if (minutes < 1) {
+		minutes = 0;
+	} else {
+		minutes--;
+		seconds = 60;
+	}
 
 	displayTime();
-	minutes--;
 };
 
 function stopWatch() {
-	if (first) {
-		seconds = 60;
-		first = false;
-	}
 	seconds--;
 
 	if (seconds % 60 === 0) {
@@ -35,6 +37,7 @@ function stopWatch() {
 
 	if (minutes === -1) {
 		document.getElementById('display').innerHTML = 'Done!';
+		startStop();
 	} else {
 		displayTime();
 	}

@@ -1,13 +1,14 @@
 body {
 	font-family: 'Khula', -apple-system, sans-serif;
 	font-weight: bold;
-	font-size: 26vw;
+	font-size: 30vw;
 	margin: 0;
 	text-align: center;
 	line-height: 100vh;
 	background: linear-gradient(180deg, rgba(60, 182, 121, 1) 0%, rgba(60, 169, 141, 1) 35%, rgba(0, 212, 255, 1) 66%);
 	color: rgba(255, 255, 255, 0.8);
 	overflow: hidden;
+	user-select: none;
 }
 
 #visual {
@@ -41,16 +42,12 @@ html.started #visual {
 	animation-play-state: running;
 }
 
-html:not(.started) {
-	cursor: pointer;
-}
-
-html.started {
-	cursor: wait;
-}
-
 html:not(.started) #visual {
 	animation-play-state: paused;
+}
+
+html:not(.started) body {
+	filter: invert(1);
 }
 
 @keyframes visual-0 {
