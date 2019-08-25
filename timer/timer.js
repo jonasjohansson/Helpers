@@ -1,4 +1,5 @@
-let minutes, seconds;
+let minutes,
+	seconds = 0;
 let color, style;
 let status = 'stopped';
 
@@ -7,23 +8,18 @@ let first = true;
 window.onload = function() {
 	var params = getParams(window.location.href);
 
-	minutes = params.minutes === undefined ? 5 : Number(params.minutes);
+	minutes = params.minutes === undefined ? 5 : Number(Math.ceil(params.minutes));
 	color = params.color === undefined ? 'red' : params.color;
 	animation = params.style === undefined ? 0 : Number(params.animation);
-	seconds = minutes * 60;
 
 	document.documentElement.style.setProperty('--color', color);
 	document.documentElement.style.setProperty('--animation', `visual-${animation}`);
-	document.documentElement.style.setProperty('--seconds', `${seconds}s`);
-
-	if (minutes < 1) {
-		minutes = 0;
-	} else {
-		minutes--;
-		seconds = 60;
-	}
+	document.documentElement.style.setProperty('--seconds', `${minutes * 60}s`);
 
 	displayTime();
+
+	minutes--;
+	seconds = 60;
 };
 
 function stopWatch() {
@@ -33,7 +29,6 @@ function stopWatch() {
 		seconds = 60;
 		minutes--;
 	}
-	console.log(minutes, seconds);
 
 	if (minutes === -1) {
 		document.getElementById('display').innerHTML = 'Done!';
